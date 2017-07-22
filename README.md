@@ -13,7 +13,14 @@
 ```#!bash
 
 $ python bars.py # possibly requires call of python3 executive instead of just python
-# FIXME вывести пример ответа скрипта
+# Данные упешно загружнны!
+
+        Выбирете вариант действия:
+        1. Самый большой бар.
+        2. Самый маленький бар.
+        3. Самый близкий бар.
+        4. Выйти.
+        
 
 ```
 
