@@ -11,14 +11,12 @@ def load_json_data(filepath):
 
 
 def get_biggest_bar(data):
-    data.sort(key=lambda d: d['SeatsCount'])
-    return data[-1]
+    return max(data, key=lambda d: d['SeatsCount'])
 
 
 
 def get_smallest_bar(data):
-    data.sort(key=lambda d: d['SeatsCount'])
-    return data[0]
+    return min(data, key=lambda d: d['SeatsCount'])
 
 
 def get_closest_bar(data, longitude, latitude):
@@ -52,6 +50,6 @@ if __name__ == '__main__':
             x,y = float(input("ВВедите ваши координаты(долгота, широта)"))
             print(get_closest_bar(json_content, x, y))
         else:
-            print("Досвидания")
+            print("До свидания")
     else:
         print('Ошибка загрузки данных')
