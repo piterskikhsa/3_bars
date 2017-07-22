@@ -2,6 +2,8 @@ import json
 import os
 from math import fabs
 
+import sys
+
 
 def load_json_data(filepath):
     if not os.path.exists(filepath):
@@ -10,28 +12,31 @@ def load_json_data(filepath):
         return json.load(file_handler)
 
 
-def get_biggest_bar(data):
-    return max(data, key=lambda d: d['SeatsCount'])
+def get_biggest_bar(json_data):
+    return max(json_data, key=lambda d: d['SeatsCount'])
 
 
 
-def get_smallest_bar(data):
-    return min(data, key=lambda d: d['SeatsCount'])
+def get_smallest_bar(json_data):
+    return min(json_data, key=lambda d: d['SeatsCount'])
 
 
-def get_closest_bar(data, longitude, latitude):
-    bar = {}
-    for item in data:
-        if not bar:
-            bar = item
+def get_closest_bar(json_data, longitude, latitude):
+    closest_bar = {}
+    for bar in json_data:
+        if not closest_bar:
+            closest_bar = bar
             continue
-        if fabs(float(item['Latitude_WGS84']) - latitude) <= fabs(float(bar['Latitude_WGS84'])-latitude) and \
-                fabs(float(item['Longitude_WGS84']) - longitude) <= fabs(float(bar['Longitude_WGS84'])-longitude):
-            bar = item
-    return bar
+        if fabs(float(bar['Latitude_WGS84']) - latitude) <= fabs(float(closest_bar['Latitude_WGS84'])-latitude) and \
+                fabs(float(bar['Longitude_WGS84']) - longitude) <= fabs(float(closest_bar['Longitude_WGS84'])-longitude):
+            closest_bar = bar
+    return closest_bar
 
 if __name__ == '__main__':
-    file_path = input('ВВедите путь к файлу')
+    if len(sys.argv) > 1:
+        file_path = sys.argv[1]
+    else:
+        file_path = input('ВВедите путь к файлу: ')
     json_content = load_json_data(file_path)
     if json_content:
         print('Данные упешно загружнны!')
