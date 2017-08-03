@@ -1,6 +1,6 @@
 import json
 import os
-from math import fabs
+from math import sqrt
 
 import sys
 
@@ -13,43 +13,18 @@ def load_json_data(filepath):
 
 
 def get_biggest_bar(json_data):
-    return max(json_data, key=lambda d: d['SeatsCount'])
+    return max(json_data, key=lambda bar: bar['SeatsCount'])
 
 
 def get_smallest_bar(json_data):
-    return min(json_data, key=lambda d: d['SeatsCount'])
+    return min(json_data, key=lambda bar: bar['SeatsCount'])
 
 
 def get_closest_bar(json_data, longitude, latitude):
-    closest_bar = {}
-    for bar in json_data:
-        if not closest_bar:
-            closest_bar = bar
-            continue
-        if fabs(float(bar['Latitude_WGS84']) - latitude) <= fabs(float(closest_bar['Latitude_WGS84']) - latitude) and \
-                        fabs(float(bar['Longitude_WGS84']) - longitude) <= fabs(
-                            float(closest_bar['Longitude_WGS84']) - longitude):
-            closest_bar = bar
-    return closest_bar
+    return min(json_data, key=lambda bar: get_distance(bar['Longitude_WGS84'], bar['Latitude_WGS84'], longitude, latitude) )
 
-
-def main():
-    answer = int(input('''
-            Выбирете вариант действия:
-            1. Самый большой бар.
-            2. Самый маленький бар.
-            3. Самый близкий бар. 
-            4. Выйти.
-            '''))
-    if answer == 1:
-        print(get_biggest_bar(json_content))
-    elif answer == 2:
-        print(get_smallest_bar(json_content))
-    elif answer == 3:
-        x, y = float(input("ВВедите ваши координаты(долгота, широта)"))
-        print(get_closest_bar(json_content, x, y))
-    else:
-        print("До свидания")
+def get_distance(bar_longitude, bar_latitude, user_longitude, user_latitude):
+    return sqrt((float(bar_latitude) - float(user_latitude))**2 + (float(bar_longitude) - float(user_longitude))**2)
 
 
 if __name__ == '__main__':
@@ -61,6 +36,16 @@ if __name__ == '__main__':
     json_content = load_json_data(file_path)
 
     if json_content:
-        main()
+        print('Самый большой бар - ', get_biggest_bar(json_content)['Name'])
+        print('Самый маленький бар - ', get_smallest_bar(json_content)['Name'])
+
+        print('Введите ваши координаты')
+        user_longitude = input('Долгота: ')
+        user_latitude = input('Широта: ')
+
+        if user_latitude and user_longitude:
+            print('Самый близкий бар - ', get_closest_bar(json_content, user_longitude, user_latitude)['Name'])
+        else:
+            print('Координаты не заданы')
     else:
         print('Ошибка загрузки данных')
